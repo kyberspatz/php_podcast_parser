@@ -1,7 +1,7 @@
 <?php
 /*
 
-Version: 2022.05.07.23.48
+Version: 2022.05.07.23.54
 
 This is free and unencumbered software released into the public domain.
 
@@ -56,10 +56,12 @@ $dateconfig = "d.m.Y"; // day.month.Year
 //Config #2: To prevent misusage of your script, please name the allowed feed-URLs below.
 $allowed_feeds_array = array
 	(
+	'https://schlafengehen.podigee.io/feed/mp3',
 	'https://www1.wdr.de/mediathek/audio/wdr5/wdr5-satire-deluxe/satiredeluxe100.podcast',
 	'https://www1.wdr.de/mediathek/audio/hoerspiel-speicher/wdr_hoerspielspeicher150.podcast',
 	'https://www1.wdr.de/mediathek/audio/wdr2/wdr2-kabarett/kabarett-podcast-100.podcast',
 	'https://feeds.br.de/hoerspiel-pool/feed.xml',
+	'https://leonhase.de/podcast/feed',
 	'https://kinder.wdr.de/hoerensehen/podcast-maus-102.podcast',
 	);
 
@@ -258,12 +260,12 @@ foreach($episode as $output)
 	}
 	
 // Now it's time to figure out whether the media-url is a .mp3 or a .mp4, to show the audio-player or video-player.	
-		$filetype = substr($output['media'],strrpos($output['media'],"."));
-		if($filetype == ".mp3")
+		//$filetype = substr($output['media'],strrpos($output['media'],"."));
+		if(strpos($output['media'],".mp3")!==false)
 		{
 			echo "<p><audio src=\"".$output['media']."\" controls preload=\"none\" ".$prevent_download."></audio></p>";
 		}
-	elseif($filetype == ".mp4")
+	if(strpos($output['media'],".mp4")!==false)
 		{
 // Now we're beautifying the video player by giving it round edges by adding 
 		echo "<p><video style=\"border-radius:10px;max-width:100%;\" src=\"".$output['media']."\" controls preload=\"none\" ".$prevent_download."></video></p>";
