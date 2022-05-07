@@ -1,7 +1,7 @@
 <?php
 /*
 
-Version: 2022.05.07.23.54
+Version: 2022.05.08.00.00
 
 This is free and unencumbered software released into the public domain.
 
@@ -215,7 +215,7 @@ for($a=0;$a<count($items)-1;$a++)
 		$search = substr($item,strpos($item,$search1)+strlen($search1));
 		$description = substr($search,0,strpos($search,$search2));
 		$description = str_replace("<![CDATA[","",$description);
-		$description = str_replace("]]>",">",$description);
+		$description = str_replace("]]>","",$description);
 		$description = str_replace(">>",">",$description);
 		$episode[$a]['description'] = $description;
 		
@@ -260,6 +260,14 @@ foreach($episode as $output)
 // Now it's time to figure out whether the media-url is a .mp3 or a .mp4, to show the audio-player or video-player.	
 		//$filetype = substr($output['media'],strrpos($output['media'],"."));
 		if(strpos($output['media'],".mp3")!==false)
+		{
+			echo "<p><audio src=\"".$output['media']."\" controls preload=\"none\" ".$prevent_download."></audio></p>";
+		}
+		if(strpos($output['media'],".m4a")!==false)
+		{
+			echo "<p><audio src=\"".$output['media']."\" controls preload=\"none\" ".$prevent_download."></audio></p>";
+		}
+		if(strpos($output['media'],".wav")!==false)
 		{
 			echo "<p><audio src=\"".$output['media']."\" controls preload=\"none\" ".$prevent_download."></audio></p>";
 		}
