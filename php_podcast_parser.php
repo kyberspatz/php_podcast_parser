@@ -1,7 +1,7 @@
 <?php
 /*
 
-Version: 2022.05.08.00.00
+Version: 2022.05.08.01.19
 
 This is free and unencumbered software released into the public domain.
 
@@ -193,7 +193,11 @@ $headertext = str_replace("\n","",$feed['header']);
 	$search1 = "<title>";
 	$search2 = "</title>";
 	$search = substr($headertext,strpos($headertext,$search1)+strlen($search1));
-	$header['title'] = substr($search,0,strpos($search,$search2));
+	$podcast_title = substr($search,0,strpos($search,$search2));
+	$podcast_title = str_replace("<![CDATA[","",$podcast_title);
+	$podcast_title = str_replace("]]>","",$podcast_title);
+	$podcast_title = str_replace(">>",">",$podcast_title);
+	$header['title'] = $podcast_title;
 
 $episode = array();
 
@@ -207,7 +211,11 @@ for($a=0;$a<count($items)-1;$a++)
 		$search1 = "<title>";
 		$search2 = "</title>";
 		$search = substr($item,strpos($item,$search1)+strlen($search1));
-		$episode[$a]['title'] = substr($search,0,strpos($search,$search2));
+		$episode_title = substr($search,0,strpos($search,$search2));
+		$episode_title = str_replace("<![CDATA[","",$episode_title);
+		$episode_title = str_replace("]]>","",$episode_title);
+		$episode_title = str_replace(">>",">",$episode_title);
+		$episode[$a]['title'] = $episode_title;
 		
 	//Description	
 		$search1 = "<description>";
