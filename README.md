@@ -8,9 +8,6 @@ This script uses [W3.CSS](https://www.w3schools.com/w3css/) as CSS framework.
 
 The license is [The Unlicence](https://unlicense.org/) (CC0, Public Domain).
 
-### Usage Exampe
-(link is being added in some minutes)
-
 The script works, but I consider the current status as experimental. If something is not working properly somewhere: Edit the code and try it for yourself. 
 
 Have fun with it!
