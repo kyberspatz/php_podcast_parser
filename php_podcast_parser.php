@@ -1,6 +1,8 @@
 <?php
 /*
 
+Version: 2022.05.07.23.28
+
 This is free and unencumbered software released into the public domain.
 
 Anyone is free to copy, modify, publish, use, compile, sell, or
@@ -63,6 +65,9 @@ $allowed_feeds_array = array
 
 //Config #3: How many items of the podcast do you like to have displayed?
 $how_many_items = -1; // set it to -1 for showing all items.
+
+//Config #4: Allow bypass of security check in allowed_feeds_array by using the modificator 'isok' (see information above) ?
+$allow_every_feed = FALSE; // set to TRUE if you want to allow bypassing the security feature.
 								
 ?><!DOCTYPE html>
 <html>
@@ -127,18 +132,31 @@ else
 	
 	//to prevent misusage of the script, the feed-URL must be allowed above in the $allowed_feeds_array.
 	
-	if(!isset($_GET['isok'])){
-		if(!in_array($feedrequest,$allowed_feeds_array)){		
-			$errors[] = "Sorry, this feed is not allowed. Please set it up in the sourcecode of the script.";
-		GOTO END;	} 
-	}
 	
-}
+		if(!in_array($feedrequest,$allowed_feeds_array))
+		{		
+				
+		if($allow_every_feed == false)
+			{		
+				$errors[] = "Sorry, this feed is not allowed. Please set it up in the sourcecode of the script.";
+				GOTO END;	
+			}
+	
+		  if($allow_every_feed == true)
+		  {
+			  if(!isset($_GET['isok']))
+			  {
+				 $errors[] = "Sorry, this feed is not allowed. Please set it up in the sourcecode of the script.";
+				GOTO END;	
+			  }
+			}			
+		}
+	}
 
 //if you're debugging, the script will skip the previous lines and start here.
 DEBUG:
 
-//comment the next line by adding // at the beginning, if you want to have a double_check, if the file does exist.
+//comment the next line out by adding // at the beginning, if you want to have a double_check, if the file does exist.
 $feed_file = file_get_contents($feedrequest);
 
 if(!isset($feed_file))
@@ -278,10 +296,10 @@ foreach($episode as $output)
 //And now it's time for a footer.
 echo "<p>Podcast-Description: ".$header['description']."</p>";
 echo "<p>Author(s): ".$header['author']."</p>";
-$verlinkung = '<a href="'.$header['link'].'" target="_blank">'.$header['link'].'</a>';
-echo "<p>Link to the Podcast: ".$verlinkung."</p>";
-$verlinkung = '<a href="'.$feedrequest.'" target="_blank">'.$feedrequest.'</a>';
-echo "<p>Link to the RSS-Feed: ".$verlinkung."</p>";
+$linkto = '<a href="'.$header['link'].'" target="_blank">'.$header['link'].'</a>';
+echo "<p>Link to the Podcast: ".$linkto."</p>";
+$linkto = '<a href="'.$feedrequest.'" target="_blank">'.$feedrequest.'</a>';
+echo "<p>Link to the RSS-Feed: ".$linkto."</p>";
 echo "<hr><p>Personal note: This is a \"RSS parser\" that visually edits a podcast file (xml) and forms a text from machine text that is readable by humans. All texts and files belong to the respective creators and authors of the RSS feed. These are linked or named above.</p>
 <p>This Podcast Reader is available under a <a href=\"https://unlicense.org/\">\"The Unlicence\" (CC0 Licence)</a> on <a href=\"https://github.com/kyberspatz/php_podcast_parser\">kyberspatz@github</a></p>";
 
