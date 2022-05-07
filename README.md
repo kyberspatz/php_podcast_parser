@@ -1,4 +1,4 @@
-# php_podcast_parser
+# PHP Podcast Parser
 A PHP Podcast Parser for loading XML-Feeds and displaying the items and a media for direct usage.
 
 With this script you can parse a podcast feed (XML) and get all podcast episodes listed beautifully and can play them. This script is programmed for audio podcasts and video podcasts.
