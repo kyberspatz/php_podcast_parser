@@ -144,7 +144,7 @@ $items = explode("<item>",$feed['body']);
 //Now we're slicing the array to the desired length
 if($how_many_items > -1)
 	{
-		$items = array_slice($items,2,($how_many_items+1));
+		$items = array_slice($items,1,($how_many_items+1));
 	}
 
 $headertext = str_replace("\n","",$feed['header']);
