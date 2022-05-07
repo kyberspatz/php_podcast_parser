@@ -1,5 +1,6 @@
 <?php
 /*
+
 This is free and unencumbered software released into the public domain.
 
 Anyone is free to copy, modify, publish, use, compile, sell, or
@@ -29,6 +30,22 @@ For more information, please refer to <http://unlicense.org/>
 /*
 USAGE: php_podcast_parser.php?feed=[url-encoded-FEED-URL]
 EXAMPLE: php_podcast_parser.php?feed=https%3A%2F%2Fkinder.wdr.de%2Fhoerensehen%2Fpodcast-maus-102.podcast
+
+Modificators:
+	&standalone
+	I've designed the Podcast-Parser to have it included in an <iframe> Tag on my Homepage. If you need a standalone version, use &standalone in the link.
+	
+	&isok
+	this bypasses the securitycheck of $allowed_feeds_array. You can use any feed you like; better use it for debug only. 
+	
+	&down
+	do you like to download the audio or video? Add "&down" to the link and you can do as you please.
+	
+	&feed
+	this is an inevitable.modificator.
+	
+	Here's an example of all modificators used in one link:
+	php_podcast_parser.php?&standalone&isok&down&feed=https%3A%2F%2Fkinder.wdr.de%2Fhoerensehen%2Fpodcast-maus-102.podcast
 */
 
 //Config #1: This is how the date of each episode will be formated. Adjust it to your needs.
@@ -45,7 +62,7 @@ $allowed_feeds_array = array
 	);
 
 //Config #3: How many items of the podcast do you like to have displayed?
-$how_many_items = 5; // set it to -1 for showing all items.
+$how_many_items = -1; // set it to -1 for showing all items.
 								
 ?><!DOCTYPE html>
 <html>
@@ -57,6 +74,8 @@ $how_many_items = 5; // set it to -1 for showing all items.
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <style>
 /* Put additional CSS-style here */
+
+audio {max-width:100%;}
 
 body 
 	{
@@ -71,7 +90,7 @@ body
 	{
 	border-radius: 10px;
 	background-color:rgba(255,255,255,0.4);
-	width:50%;
+	<?php if(isset($_GET['standalone'])){echo 'width:50%;';} else {echo 'width:100%;';} ?>
 	margin-left:25%;
 	margin-top:5%;
 	margin-bottom:5%;
@@ -108,9 +127,13 @@ else
 	$feedrequest = trim($_GET['feed']);
 	
 	//to prevent misusage of the script, the feed-URL must be allowed above in the $allowed_feeds_array.
-	if(!in_array($feedrequest,$allowed_feeds_array)){		
-		$errors[] = "Sorry, this feed is not allowed. Please set it up in the sourcecode of the script.";
-	GOTO END;	} 
+	
+	if(!isset($_GET['isok'])){
+		if(!in_array($feedrequest,$allowed_feeds_array)){		
+			$errors[] = "Sorry, this feed is not allowed. Please set it up in the sourcecode of the script.";
+		GOTO END;	} 
+	}
+	
 }
 
 //if you're debugging, the script will skip the previous lines and start here.
