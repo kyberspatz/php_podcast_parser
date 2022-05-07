@@ -260,7 +260,8 @@ $verlinkung = '<a href="'.$header['link'].'" target="_blank">'.$header['link'].'
 echo "<p>Link to the Podcast: ".$verlinkung."</p>";
 $verlinkung = '<a href="'.$feedrequest.'" target="_blank">'.$feedrequest.'</a>';
 echo "<p>Link to the RSS-Feed: ".$verlinkung."</p>";
-echo "<hr><p>Personal note: This is a \"RSS parser\" that visually edits a podcast file (xml) and forms a text from machine text that is readable by humans. All texts and files belong to the respective creators and authors of the RSS feed. These are linked or named above.</p>";
+echo "<hr><p>Personal note: This is a \"RSS parser\" that visually edits a podcast file (xml) and forms a text from machine text that is readable by humans. All texts and files belong to the respective creators and authors of the RSS feed. These are linked or named above.</p>
+<p>This Podcast Reader is available under a <a href=\"https://unlicense.org/\">\"The Unlicence\" (CC0 Licence)</a> on <a href=\"https://github.com/kyberspatz/php_podcast_parser\">kyberspatz@github</a></p>";
 
 END:
 // Error output
