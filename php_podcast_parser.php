@@ -1,7 +1,7 @@
 <?php
 /*
 
-Version: 2022.05.07.23.28
+Version: 2022.05.07.23.47
 
 This is free and unencumbered software released into the public domain.
 
@@ -67,7 +67,7 @@ $allowed_feeds_array = array
 $how_many_items = -1; // set it to -1 for showing all items.
 
 //Config #4: Allow bypass of security check in allowed_feeds_array by using the modificator 'isok' (see information above) ?
-$allow_every_feed = FALSE; // set to TRUE if you want to allow bypassing the security feature.
+$allow_every_feed = TRUE; // set to TRUE if you want to allow bypassing the security feature.
 								
 ?><!DOCTYPE html>
 <html>
@@ -216,6 +216,7 @@ for($a=0;$a<count($items)-1;$a++)
 		$description = substr($search,0,strpos($search,$search2));
 		$description = str_replace("<![CDATA[","",$description);
 		$description = str_replace("]]>",">",$description);
+		$description = str_replace(">>",">",$description);
 		$episode[$a]['description'] = $description;
 		
 	//pubDate	
