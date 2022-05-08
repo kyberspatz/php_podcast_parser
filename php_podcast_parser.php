@@ -1,7 +1,7 @@
 <?php
 /*
 
-Version: 2022.05.08.03.07
+Version: 2022.05.08.03.25
 
 This is free and unencumbered software released into the public domain.
 
@@ -65,8 +65,9 @@ $allowed_feeds_array = array
 	'https://www1.wdr.de/mediathek/audio/wdr2/wdr2-kabarett/kabarett-podcast-100.podcast',
 	'https://feeds.br.de/hoerspiel-pool/feed.xml',
 	'https://kinder.wdr.de/hoerensehen/podcast-maus-102.podcast',
+	'http://www.kulturradio.de/zum_nachhoeren/podcast/hoerspiel-feed.xml/feed=podcast.xml'
 	);
-
+	
 //Config #3: How many items of the podcast do you like to have displayed?
 $how_many_items = -1; // set it to -1 for showing all items.
 
@@ -380,7 +381,11 @@ foreach($episode as $output)
 	$search1 = "<description>";
 	$search2 = "</description>";
 	$search = substr($headertext,strpos($headertext,$search1)+strlen($search1));
-	$header['description'] = substr($search,0,strpos($search,$search2));
+	$podcast_description = substr($search,0,strpos($search,$search2));
+	$podcast_description = str_replace("<![CDATA[","",$podcast_description);
+	$podcast_description = str_replace("]]>","",$podcast_description);
+	$podcast_description = str_replace(">>",">",$podcast_description);
+	$header['description'] = $podcast_description;
 	
 //Authors	
 	$search1 = "<itunes:author>";
