@@ -1,7 +1,7 @@
 <?php
 /*
 
-Version: 2022.05.08.03.02
+Version: 2022.05.08.03.07
 
 This is free and unencumbered software released into the public domain.
 
@@ -34,20 +34,24 @@ USAGE: php_podcast_parser.php?feed=[url-encoded-FEED-URL]
 EXAMPLE: php_podcast_parser.php?feed=https%3A%2F%2Fkinder.wdr.de%2Fhoerensehen%2Fpodcast-maus-102.podcast
 
 Modificators:
-	&standalone
-	I've designed the Podcast-Parser to have it included in an <iframe> Tag on my Homepage. If you need a standalone version, use &standalone in the link.
-	
-	&isok
-	this bypasses the securitycheck of $allowed_feeds_array. You can use any feed you like; better use it for debug only. 
 	
 	&down
 	do you like to download the audio or video? Add "&down" to the link and you can do as you please.
 	
 	&feed
-	this is an inevitable.modificator.
+	this is an inevitable modificator.
 	
+	&isok
+	this bypasses the securitycheck of $allowed_feeds_array. You can use any feed you like; better use it for debug only. 
+	
+	&lang=de
+	switches from English to German.
+	
+	&standalone
+	I've designed the Podcast-Parser to have it included in an <iframe> Tag on my Homepage. If you need a standalone version, use &standalone in the link.
+		
 	Here's an example of all modificators used in one link:
-	php_podcast_parser.php?&standalone&isok&down&feed=https%3A%2F%2Fkinder.wdr.de%2Fhoerensehen%2Fpodcast-maus-102.podcast
+	php_podcast_parser.php?&standalone&de&isok&down&feed=https%3A%2F%2Fkinder.wdr.de%2Fhoerensehen%2Fpodcast-maus-102.podcast
 */
 
 //Config #1: This is how the date of each episode will be formated. Adjust it to your needs.
