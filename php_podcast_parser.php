@@ -1,7 +1,7 @@
 <?php
 /*
 
-Version: 2022.05.08.01.19
+Version: 2022.05.08.03.02
 
 This is free and unencumbered software released into the public domain.
 
@@ -67,7 +67,33 @@ $allowed_feeds_array = array
 $how_many_items = -1; // set it to -1 for showing all items.
 
 //Config #4: Allow bypass of security check in allowed_feeds_array by using the modificator 'isok' (see information above) ?
-$allow_every_feed = FALSE; // set to TRUE if you want to allow bypassing the security feature.
+$allow_every_feed = false; // set to TRUE if you want to allow bypassing the security feature.
+
+//Below is the language configuration.
+$name_authors = "Authors";
+$name_link_episode = "Episode Link";
+$name_podcast_description = "Podcast-Description";
+$name_podcast_authors = "Podcast-Authors";
+$name_link_to_the_podcast = "Link to the Podcast";
+$name_link_to_the_feed = "Link to the Feed";
+$name_personal_note = "Personal note: This is a \"RSS parser\" that visually edits a podcast file (xml) and forms a text from machine text that is readable by humans. All texts and files belong to the respective creators and authors of the RSS feed. These are linked or named above.";
+$name_legal_explanation = "This Podcast Reader is available under a <a href=\"https://unlicense.org/\">\"The Unlicence\" (CC0 Licence)</a> on <a href=\"https://github.com/kyberspatz/php_podcast_parser\">kyberspatz@github</a>";
+
+if(isset($_GET['lang']))
+{
+	$lang = trim($_GET['lang']);
+		if($lang = "de")
+		{
+		$name_authors = "Autoren";
+		$name_link_episode = "Link zur Episode";
+		$name_podcast_description = "Podcast-Beschreibung";
+		$name_podcast_authors = "Podcast-Autor(en)";
+		$name_link_to_the_podcast = "Link zum Podcast";
+		$name_link_to_the_feed = "Link zum Feed";
+		$name_personal_note = 'Persönlicher Hinweis: Dies ist ein "RSS-Parser", der aus dem XML-Code eines XML-Feeds (Podcast) einen lesbaren Code für Menschen macht. Die hier genannten Texte, Bilder und Dateien werden nur geparsed, nicht zu eigen gemacht. Alle Rechte gehören den jeweilig genannten Autoren und verlinkten Webseiten.';
+		$name_legal_explanation = 'Der Code des PHP-RSS-Parser ist frei verfügbar unter einer <a href="https://unlicense.org/">"The Unlicence" (CC0 Lizenz = Gemeinfrei)</a> bei <a href="https://github.com/kyberspatz/php_podcast_parser">kyberspatz@github</a>';
+		}
+}
 								
 ?><!DOCTYPE html>
 <html>
@@ -158,6 +184,7 @@ DEBUG:
 
 //comment the next line out by adding // at the beginning, if you want to have a double_check, if the file does exist.
 $feed_file = file_get_contents($feedrequest);
+//var_dump($feed_file);exit;
 
 if(!isset($feed_file))
 	{
@@ -176,10 +203,10 @@ if(!isset($feed_file))
 	}
 
 //Separates the header from the body (which contains the <items>)
-$feed['header'] = substr($feed_file,0,strpos($feed_file,"<item>"));
-$feed['body'] = substr($feed_file,strpos($feed_file,"<item>"));
+$feed['header'] = substr($feed_file,0,strpos($feed_file,"<item"));
+$feed['body'] = substr($feed_file,strpos($feed_file,"<item"));
 
-$items = explode("<item>",$feed['body']);
+$items = explode("<item",$feed['body']);
 
 //Now we're slicing the array to the desired length
 if($how_many_items > -1)
@@ -227,12 +254,53 @@ for($a=0;$a<count($items)-1;$a++)
 		$description = str_replace(">>",">",$description);
 		$episode[$a]['description'] = $description;
 		
+	//Episode Authors	
+		$search1 = "<itunes:author>";
+		$search2 = "</itunes:author>";
+		$search = substr($item,strpos($item,$search1)+strlen($search1));
+		if(strpos($item,$search1) !== false)
+		{
+			$episode_authors = substr($search,0,strpos($search,$search2));
+			$episode_authors = str_replace("<![CDATA[","",$episode_authors);
+			$episode_authors = str_replace("]]>","",$episode_authors);
+			$episode_authors = str_replace(">>",">",$episode_authors);
+			$episode[$a]['episode_authors'] = $episode_authors;
+		}
+		
+		
+	//link	
+		$search1 = "<link>";
+		$search2 = "</link>";
+		$search = substr($item,strpos($item,$search1)+strlen($search1));
+		$episodelink = substr($search,0,strpos($search,$search2));
+		$episodelink = str_replace("<![CDATA[","",$episodelink);
+		$episodelink = str_replace("]]>","",$episodelink);
+		$episodelink = str_replace(">>",">",$episodelink);
+		$episode[$a]['episodelink'] = $episodelink;	
+		
 	//pubDate	
 		$search1 = "<pubDate>";
 		$search2 = "</pubDate>";
 		$search = substr($item,strpos($item,$search1)+strlen($search1));
 		$pubDate[$a] = substr($search,0,strpos($search,$search2));
 		$episode[$a]['pubDate'] = date($dateconfig,strtotime($pubDate[$a]));
+		
+		
+		//pubDate -> dc:date
+		$search1b = "<dc:date>";
+		$search2b = "</dc:date>";
+		if(strpos($item,$search1b) !== false)
+		{
+			$searchb = substr($item,strpos($item,$search1b)+strlen($search1b));
+			$pubDate[$a] = substr($searchb,0,strpos($searchb,$search2b));
+			$episode[$a]['pubDate'] = date($dateconfig,strtotime($pubDate[$a]));	
+		} else 
+		{
+			if(!strpos($item,$search1b) && !strpos($item,$search1)){
+				$episode[$a]['pubDate'] = "";
+			}
+		}
+		
 		
 	//Media	
 		$search1 = "url=\"";
@@ -286,6 +354,12 @@ foreach($episode as $output)
 		}
 		
 	echo "<p class='podcast-item-beschreibung'>".$output['description']."</p>";
+	if(isset($output['episode_authors']))
+		{
+			echo "<p>".$name_authors.": ".$output['episode_authors']."</p>";
+		}
+	$linkto = '<a href="'.$output['episodelink'].'" target="_blank">['.$name_link_episode.']</a>';
+	echo "<p>".$linkto."</p>";
 	echo "<hr>";
 	
 }
@@ -307,18 +381,24 @@ foreach($episode as $output)
 //Authors	
 	$search1 = "<itunes:author>";
 	$search2 = "</itunes:author>";
+	if(strpos($headertext,$search1) !== false){
 	$search = substr($headertext,strpos($headertext,$search1)+strlen($search1));
 	$header['author'] = substr($search,0,strpos($search,$search2));
+	}
 
 //And now it's time for a footer.
-echo "<p>Podcast-Description: ".$header['description']."</p>";
-echo "<p>Author(s): ".$header['author']."</p>";
+echo "<p>".$name_podcast_description.": ".$header['description']."</p>";
+echo "<hr>";
+if(isset($header['author']))
+	{
+		echo "<p>".$name_podcast_authors.": ".$header['author']."</p>";
+	}
 $linkto = '<a href="'.$header['link'].'" target="_blank">'.$header['link'].'</a>';
-echo "<p>Link to the Podcast: ".$linkto."</p>";
+echo "<p>".$name_link_to_the_podcast.": ".$linkto."</p>";
 $linkto = '<a href="'.$feedrequest.'" target="_blank">'.$feedrequest.'</a>';
-echo "<p>Link to the RSS-Feed: ".$linkto."</p>";
-echo "<hr><p>Personal note: This is a \"RSS parser\" that visually edits a podcast file (xml) and forms a text from machine text that is readable by humans. All texts and files belong to the respective creators and authors of the RSS feed. These are linked or named above.</p>
-<p>This Podcast Reader is available under a <a href=\"https://unlicense.org/\">\"The Unlicence\" (CC0 Licence)</a> on <a href=\"https://github.com/kyberspatz/php_podcast_parser\">kyberspatz@github</a></p>";
+echo "<p>".$name_link_to_the_feed.": ".$linkto."</p>";
+echo "<hr><p>".$name_personal_note."</p>";
+echo "<p>".$name_legal_explanation."</p>";
 
 END:
 // Error output
